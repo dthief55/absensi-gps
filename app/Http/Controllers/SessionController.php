@@ -39,20 +39,21 @@ class SessionController extends Controller
         if(Auth::attempt($attempt)){
             $request->session()->put('email', $email);
 
-            $getAdminColumn     = User::where('email', $email)->get('is_admin', 'name');
-            $decodedAdminColumn = json_decode($getAdminColumn, true);
+            $getAdminColumn     = User::where('email', $email)->get(['is_admin', 'name']);
+            $decodedAdminColumn = json_decode($getAdminColumn, true)[0];
+            $name               = $decodedAdminColumn['name'];
+            $isAdmin            = $decodedAdminColumn['is_admin'];
 
-            var_dump($decodedAdminColumn);
-            // $isAdmin            = $decodedAdminColumn[0]['is_admin'];
-
-            // if($isAdmin == 1){
-            //     return redirect('/admin-index');
-            // }else{
-            //     return redirect('/index');
-            // }
+            if($isAdmin == 1){
+                return redirect('/admin-index');
+            }else{
+                return redirect('/');
+            }
 
         }else{
             return view('login', ['message' => 'Email atau password salah!']);
         }
     }
+
+    function is_admin(){}
 }

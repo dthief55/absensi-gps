@@ -11,6 +11,8 @@ window.addEventListener('DOMContentLoaded', event => {
 
     // Toggle the side navigation
     const sidebarToggle = document.body.querySelector('#sidebarToggle');
+    const container = document.getElementById('container');
+
     if (sidebarToggle) {
         // Uncomment Below to persist sidebar toggle between refreshes
         // if (localStorage.getItem('sb|sidebar-toggle') === 'true') {
@@ -21,6 +23,12 @@ window.addEventListener('DOMContentLoaded', event => {
             document.body.classList.toggle('sb-sidenav-toggled');
             localStorage.setItem('sb|sidebar-toggle', document.body.classList.contains('sb-sidenav-toggled'));
         });
+    }
+
+    if (container){
+        container.addEventListener('mouseenter', function(){
+            container.innerHTML = "<h1 style='background-color: blue'>Overed!</h1>";
+        })
     }
 
 });
