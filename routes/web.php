@@ -1,41 +1,59 @@
 <?php
 
+use App\Http\Controllers\SessionController;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', function () {
-    return view('index');
+Route::get('/', function(Request $request){
+    if($request->session()->has('email')){
+        return view('index');
+    }else{
+        return view('login', ['message' => 'Harap login terlebih dahulu!']);
+    }
 });
 
-Route::get('/admin', function () {
-    return view('admin-index');
+Route::get('/admin-index', function(Request $request){
+    if($request->session()->has('email')){
+        return view('admin-index');
+    }else{
+        return view('login', ['message' => 'Harap login terlebih dahulu!']);
+    }
 });
 
-Route::post('/login', function () {
-    return view('login');
+Route::get('/login', [SessionController::class, 'index']);
+
+Route::post('/login/attempt', [SessionController::class, 'login']);
+
+Route::get('/logout', function(Request $request){
+    if($request->session()->has('email')){
+        $request->session()->pull('email');
+    }
+    return redirect('/login');
 });
 
-Route::post('/register', function () {
+Route::get('/register', function () {
     return view('register');
 });
 
-Route::post('/password', function () {
+Route::get('/password', function () {
     return view('password');
 });
 
-Route::get('/layout-sidenav-light', function () {
-    return view('layout-sidenav-light');
+Route::get('/', function(Request $request){
+    if($request->session()->has('email')){
+        return view('charts');
+    }else{
+        return view('login', ['message' => 'Harap login terlebih dahulu!']);
+    }
 });
 
-Route::get('/layout-static', function () {
-    return view('layout-static');
-});
-
-Route::get('/charts', function () {
-    return view('charts');
-});
-
-Route::get('/tables', function () {
-    return view('tables');
+Route::get('/', function(Request $request){
+    if($request->session()->has('email')){
+        return view('tables');
+    }else{
+        return view('login', ['message' => 'Harap login terlebih dahulu!']);
+    }
 });
 
 Route::get('/401', function () {
