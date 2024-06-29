@@ -3,41 +3,56 @@
 use App\Http\Controllers\SessionController;
 use App\Models\User;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function(Request $request){
-    if($request->session()->has('email')){  
-        $email = $request->session()->get('email');
-        $getAdminColumn     = User::where('email', $email)->get(['is_admin', 'name']);
-        $decodedAdminColumn = json_decode($getAdminColumn, true)[0];
-        $name               = $decodedAdminColumn['name'];
-        $isAdmin            = $decodedAdminColumn['is_admin'];
+    if($request->session()->has('email')){
+        $session_val = $request->session()->get('email');
+        $email = $session_val;
 
-        if($isAdmin == 1){
-            echo "
-            <script>
-                alert('Admin dilarang melihat data penting karyawan!');
-                document.location.href = '/admin-index';
+        $get_user_data          = User::where('email', $email)->get()->toArray();
+        $user_data              = $get_user_data[0];
+        $user_name              = $user_data['name'];
+        $user_admin_status      = $user_data['is_admin'];
+
+        if($user_admin_status == 1){
+            echo "<script>
+                alert('Admin dilarang melihat data privasi pengguna!');
+                document.location.href = '/admin';
             </script>";
         }else{
-            return view('index');
+            return view('index', ['name' => $user_name]);
         }
     }else{
-        return view('login', ['message' => 'Harap login terlebih dahulu!']);
+        if($request->cookie('cookie_setted')){
+            $cookie_val = request()->cookie('cookie_setted');
+            
+            request()->session()->put('email', $cookie_val);
+            $session_val = request()->session()->get('email');
+
+            $email = $session_val;
+
+            return redirect('/login')->with('email', $email);
+            
+        }else{
+            return view('login', ['message' => 'Harap login terlebih dahulu!']);
+        }
     }
 });
 
-Route::get('/admin-index', function(Request $request){
+Route::get('/admin', function(Request $request){
     if($request->session()->has('email')){
-        $email = $request->session()->get('email');
-        $getAdminColumn     = User::where('email', $email)->get(['is_admin', 'name']);
-        $decodedAdminColumn = json_decode($getAdminColumn, true)[0];
-        $name               = $decodedAdminColumn['name'];
-        $isAdmin            = $decodedAdminColumn['is_admin'];
+        $session_val = $request->session()->get('email');
+        $email = $session_val;
 
-        if($isAdmin == 1){
-            return view('admin-index');
+        $get_user_data          = User::where('email', $email)->get()->toArray();
+        $user_data              = $get_user_data[0];
+        $user_name              = $user_data['name'];
+        $user_admin_status      = $user_data['is_admin'];
+
+        if($user_admin_status == 1){
+            return view('admin-index', ['name' => $user_name]);
         }else{
             echo "<script>
                 alert('Anda bukan admin!');
@@ -45,7 +60,19 @@ Route::get('/admin-index', function(Request $request){
             </script>";
         }
     }else{
-        return view('login', ['message' => 'Harap login terlebih dahulu!']);
+        if($request->cookie('cookie_setted')){
+            $cookie_val = request()->cookie('cookie_setted');
+            
+            request()->session()->put('email', $cookie_val);
+            $session_val = request()->session()->get('email');
+
+            $email = $session_val;
+
+            return redirect('/login')->with('email', $email);
+            
+        }else{
+            return view('login', ['message' => 'Harap login terlebih dahulu!']);
+        }
     }
 });
 

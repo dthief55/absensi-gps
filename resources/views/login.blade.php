@@ -10,15 +10,15 @@
                     <form action="/login/attempt" method="post">
                         @csrf
                         <div class="form-floating mb-3">
-                            <input class="form-control" id="inputEmail" name="email" type="email" placeholder="name@example.com" required/>
+                            <input class="form-control" id="inputEmail" name="email" type="email" placeholder="name@example.com" value="{{ isset($email)? $email : null }}" required/>
                             <label for="inputEmail">Email address</label>
                         </div>
                         <div class="form-floating mb-3">
-                            <input class="form-control" id="inputPassword" name="password" type="password" placeholder="Password" required/>
+                            <input class="form-control" id="inputPassword" name="password" type="password" placeholder="Password" {{ !isset($email)? 'required' : '' }}/>
                             <label for="inputPassword">Password</label>
                         </div>
                         <div class="form-check mb-3">
-                            <input class="form-check-input" id="inputRememberPassword" name="remember_password" type="checkbox" value=true />
+                            <input class="form-check-input" id="inputRememberPassword" name="remember_password" type="checkbox" value=1 />
                             <label class="form-check-label" for="inputRememberPassword">Remember Password</label>
                         </div>
                         <div class="d-flex align-items-center justify-content-between mt-4 mb-0">
