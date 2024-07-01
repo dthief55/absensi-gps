@@ -1,9 +1,11 @@
 <?php
 
+use App\Http\Controllers\PresensiController;
 use App\Http\Controllers\SessionController;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cookie;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function(Request $request){
@@ -80,6 +82,10 @@ Route::get('/login', [SessionController::class, 'index']);
 
 Route::post('/login/attempt', [SessionController::class, 'login']);
 
+Route::get('/testing', function(){
+    return view('testing');
+});
+
 Route::get('/logout', function(Request $request){
     if($request->session()->has('email')){
         $request->session()->pull('email');
@@ -111,22 +117,22 @@ Route::get('/tables', function(Request $request){
     }
 });
 
-Route::get('/test', function(Request $request){
-    if($request->session()->has('email')){
-        return view('test');
-    }else{
-        return view('login', ['message' => 'Harap login terlebih dahulu!']);
-    }
+Route::get('/karyawan/presensi', [PresensiController::class, 'index']);
+
+Route::post('/karyawan/presensi/attempt', function(Request $request){
+    $x_coordinate = $request->input('x_coordinate');
+    $y_coordinate = $request->input('y_coordinate');
+    
 });
 
 Route::get('/401', function () {
-    return view('401');
+    return view('errors/401');
 });
 
 Route::get('/404', function () {
-    return view('404');
+    return view('errors/404');
 });
 
 Route::get('/500', function () {
-    return view('500');
+    return view('errors/500');
 });

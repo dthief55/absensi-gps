@@ -1,34 +1,44 @@
-/*!
-    * Start Bootstrap - SB Admin v7.0.7 (https://startbootstrap.com/template/sb-admin)
-    * Copyright 2013-2023 Start Bootstrap
-    * Licensed under MIT (https://github.com/StartBootstrap/startbootstrap-sb-admin/blob/master/LICENSE)
-    */
-    // 
-// Scripts
-// 
+$(document).ready(function(){
+    const $sidebarToggle    = $('#sidebarToggle')
+    const $button           = $( "#presensi_hadir")
+    const $loadingSpinner   = $('#loading_spinner')
+    const $text             = $('#success_text')
 
-window.addEventListener('DOMContentLoaded', event => {
-
-    // Toggle the side navigation
-    const sidebarToggle = document.body.querySelector('#sidebarToggle');
-    const container = document.getElementById('container');
-
-    if (sidebarToggle) {
-        // Uncomment Below to persist sidebar toggle between refreshes
-        // if (localStorage.getItem('sb|sidebar-toggle') === 'true') {
-        //     document.body.classList.toggle('sb-sidenav-toggled');
-        // }
-        sidebarToggle.addEventListener('click', event => {
+    if ($sidebarToggle) {
+        $sidebarToggle.on("click", function(event){
             event.preventDefault();
             document.body.classList.toggle('sb-sidenav-toggled');
             localStorage.setItem('sb|sidebar-toggle', document.body.classList.contains('sb-sidenav-toggled'));
         });
     }
 
-    if (container){
-        container.addEventListener('mouseenter', function(){
-            container.innerHTML = "<h1 style='background-color: blue'>Overed!</h1>";
-        })
+    function show_position(position){
+        $loadingSpinner.show('slow')
+        coordinate = position.coords
+        x_coor = coordinate.longitude
+        y_coor = coordinate.latitude
+
+        $.ajax({
+            method: 'post',
+            url: '/karyawan/presensi/attempt',
+            data : {
+                x_coordinate : x_coor,
+                y_coordinate : y_coor
+            },
+            headers : {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('conte nt')},
+            success : function(result){
+                $loadingSpinner.hide('slow')
+                $text.html('Presensi Berhasil!')
+        }})
+
+        return window.coordinate = coordinate
     }
 
-});
+    function err_msg(msg){
+        return alert('Error when get location \n' + msg)
+    }
+
+    $button.on( "click", function(){
+        navigator.geolocation.getCurrentPosition(show_position, err_msg)
+    })
+})
