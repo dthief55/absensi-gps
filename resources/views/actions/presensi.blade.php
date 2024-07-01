@@ -25,9 +25,12 @@
             </div>
             <div class="row py-1">
                 <div class="col"></div>
-                    <button id="presensi_hadir" type="button" class="btn btn-primary col">Submit</button>
+                <button id="presensi_hadir" type="button" class="btn btn-primary col">Submit</button>
                 <div class="col"></div>
             </div>
+        </div>
+        <div class="container px-4 mx-auto w-50">
+            <p class="text-center" style="color: rgb(36, 107, 213)">{{ $message ? $message : ''  }}</p>
         </div>
     </div>
 </x-layout>

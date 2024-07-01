@@ -14,24 +14,30 @@ $(document).ready(function(){
 
     function show_position(position){
         $loadingSpinner.show('slow')
+
+        untirta_x = 106.03210177831828
+        untirta_y = -5.996174612901304
+
         coordinate = position.coords
-        x_coor = coordinate.longitude
-        y_coor = coordinate.latitude
-
-        $.ajax({
-            method: 'post',
-            url: '/karyawan/presensi/attempt',
-            data : {
-                x_coordinate : x_coor,
-                y_coordinate : y_coor
-            },
-            headers : {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('conte nt')},
-            success : function(result){
-                $loadingSpinner.hide('slow')
-                $text.html('Presensi Berhasil!')
-        }})
-
-        return window.coordinate = coordinate
+        x_coor     = coordinate.longitude
+        y_coor     = coordinate.latitude
+        
+        if(Math.abs(x_coor - untirta_x) <= 0.0020 && Math.abs(y_coor - untirta_y) <= 0.0010){
+            $.ajax({
+                url : '/karyawan/presensi/attempt',
+                type : 'get',
+                data : {
+                    x_coordinate : x_coor,
+                    y_coordinate : y_coor
+                }
+            })
+            
+            $loadingSpinner.hide('slow')
+            $text.html('Presensi Berhasil!')
+        }else{
+            $loadingSpinner.hide('slow')
+            $text.html('Anda berada diluar jangkauan kampus!')
+        }
     }
 
     function err_msg(msg){
